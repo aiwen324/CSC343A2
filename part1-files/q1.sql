@@ -99,11 +99,14 @@ CREATE VIEW final_result AS
 	NATURAL LEFT JOIN grade_gt_50
 	NATURAL LEFT JOIN grade_lt_50;
 
--- Make the value of null equals 0;
-IF EXISTS (UPDATE final_result SET average_mark_percent = 0, 
-num_80_100 = 0, num_60_79 = 0, num_50_59 = 0,
-num_0_49 = 0 WHERE average_mark_percent = NULL);
 
 -- Final answer.
 INSERT INTO q1 (SELECT * FROM final_result);
+UPDATE q1 SET average_mark_percent = 0, 
+num_80_100 = 0, num_60_79 = 0, num_50_59 = 0,
+num_0_49 = 0 WHERE average_mark_percent is NULL;
+UPDATE q1 SET num_80_100 = 0 WHERE num_80_100 is NULL;
+UPDATE q1 SET num_60_79 = 0 where num_60_79 is NULL;
+UPDATE q1 SET num_50_59 = 0 where num_50_59 is NULL;
+UPDATE q1 SET num_0_49 = 0 where num_0_49 is NULL;
 	-- put a final query here so that its results will go into the table.
