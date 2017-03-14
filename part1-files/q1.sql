@@ -22,8 +22,8 @@ DROP VIEW IF EXISTS ast_groupid CASCADE;
 -- Create the view of assignment_id and group_id
 CREATE VIEW ast_groupid AS
 	SELECT assignment_id, group_id, mark
-	From Assignment LEFT JOIN AssignmentGroup
-	lEFT JOIN Result;
+	From Assignment NATURAL LEFT JOIN AssignmentGroup
+	NATURAL LEFT JOIN Result;
 
 
 CREATE VIEW total_grade AS
@@ -84,10 +84,10 @@ CREATE VIEW grade_avg AS
 	
 -- Make joint of some VIEWS above
 CREATE VIEW final_result AS
-	grade_avg lEFT JOIN grade_gt_80
-	LEFT JOIN grade_gt_60
-	LEFT JOIN grade_gt_50
-	LEFT JOIN grade_lt_50;
+	grade_avg NATURAL lEFT JOIN grade_gt_80
+	NATURAL LEFT JOIN grade_gt_60
+	NATURAL LEFT JOIN grade_gt_50
+	NATURAL LEFT JOIN grade_lt_50;
 
 	
 -- Make the value of null equals 0;
