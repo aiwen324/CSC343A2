@@ -15,6 +15,14 @@ CREATE TABLE q2 (
 DROP VIEW IF EXISTS intermediate_step CASCADE;
 
 -- Define views for your intermediate steps here.
+CREATE VIEW 
+
+
+
+
+
+
+
 
 -- Final answer.
 INSERT INTO q2 
