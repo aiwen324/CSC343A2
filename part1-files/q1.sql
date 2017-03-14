@@ -16,15 +16,23 @@ CREATE TABLE q1 (
 -- You may find it convenient to do this for each of the views
 -- that define your intermediate steps.  (But give them better names!)
 DROP VIEW IF EXISTS ast_groupid CASCADE;
+DROP VIEW IF EXISTS total_grade CASCADE;
 
 -- Define views for your intermediate steps here.
 
 -- Create the view of assignment_id and group_id
 CREATE VIEW ast_groupid AS
-	SELECT assignment_id, group_id, mark
+	SELECT assignment_id, group_id
 	From Assignment NATURAL LEFT JOIN AssignmentGroup
 	NATURAL LEFT JOIN Result;
 
+-- Create the view of assignment_id and group_id with mark
+CREATE VIEW ast_group_mark AS
+	SELECT assignment_id, group_id, mark
+	FROM ast_groupid NATURAL LEFT JOIN Result;
+	
+	
+	
 
 CREATE VIEW total_grade AS
 	SELECT sum(out_of * weight) as mark, assignment_id
@@ -32,8 +40,8 @@ CREATE VIEW total_grade AS
 	GROUP BY assignment_id;
 
 CREATE VIEW total_grade_percent AS
-	SELECT (a.mark / t.mark) as mark_per, a.assignment_id, group_id
-	From ast_groupid a LEFT JOIN total_grade t
+	SELECT (a.mark * 100/ t.mark) as mark_per, a.assignment_id, group_id
+	From ast_group_mark a LEFT JOIN total_grade t
 	ON a.assignment_id = t.assignment_id;
 
 CREATE VIEW grade_gt_80 AS
