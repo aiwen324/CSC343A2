@@ -22,7 +22,8 @@ DROP VIEW IF EXISTS ast_groupid CASCADE;
 -- Create the view of assignment_id and group_id
 CREATE VIEW ast_groupid AS
 	SELECT assignment_id, group_id, mark
-	From Assignment LEFT JOIN Result;
+	From Assignment LEFT JOIN AssignmentGroup
+	lEFT JOIN Result;
 
 
 CREATE VIEW total_grade AS
