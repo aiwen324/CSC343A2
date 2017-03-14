@@ -49,7 +49,8 @@ CREATE VIEW grade_gt_80 AS
 	FROM (
 		SELECT mark_per, assignment_id, group_id
 		FROM total_grade_percent
-		WHERE 80 <= mark_per and mark_per <= 100;
+		WHERE mark_per >= 80 
+		AND mark_per <= 100
 		)
 	GROUP BY assignment_id;
 
@@ -59,7 +60,7 @@ CREATE VIEW grade_gt_60 AS
 	FROM (
 		SELECT mark_per, assignment_id, group_id
 		FROM total_grade_percent
-		WHERE 60 <= mark_per and mark_per < 80;
+		WHERE 60 <= mark_per AND mark_per < 80
 		)
 	GROUP BY assignment_id;
 	
@@ -69,7 +70,7 @@ CREATE VIEW grade_gt_50 AS
 	FROM (
 		SELECT mark_per, assignment_id, group_id
 		FROM total_grade_percent
-		WHERE 50 <= mark_per and mark_per < 60;
+		WHERE 50 <= mark_per AND mark_per < 60
 		)
 	GROUP BY assignment_id;
 	
@@ -80,7 +81,7 @@ CREATE VIEW grade_lt_50 AS
 	FROM (
 		SELECT mark_per, assignment_id, group_id
 		FROM total_grade_percent
-		WHERE mark_per < 50;
+		WHERE mark_per < 50
 		)
 	GROUP BY assignment_id;
 	
@@ -93,7 +94,7 @@ CREATE VIEW grade_avg AS
 -- Make joint of some VIEWS above
 CREATE VIEW final_result AS
 	SELECT * FROM
-	grade_avg NATURAL lEFT JOIN grade_gt_80
+	grade_avg NATURAL LEFT JOIN grade_gt_80
 	NATURAL LEFT JOIN grade_gt_60
 	NATURAL LEFT JOIN grade_gt_50
 	NATURAL LEFT JOIN grade_lt_50;
