@@ -51,8 +51,8 @@ CREATE VIEW grade_gt_80 AS
 		FROM total_grade_percent
 		WHERE mark_per >= 80 
 		AND mark_per <= 100
-		)
-	GROUP BY assignment_id;
+		) g1
+	GROUP BY g1.assignment_id;
 
 -- View for grade between 60 and 79
 CREATE VIEW grade_gt_60 AS
@@ -61,8 +61,8 @@ CREATE VIEW grade_gt_60 AS
 		SELECT mark_per, assignment_id, group_id
 		FROM total_grade_percent
 		WHERE 60 <= mark_per AND mark_per < 80
-		)
-	GROUP BY assignment_id;
+		) g2
+	GROUP BY g2.assignment_id;
 	
 -- View for grade between 50 and 59
 CREATE VIEW grade_gt_50 AS
@@ -71,8 +71,8 @@ CREATE VIEW grade_gt_50 AS
 		SELECT mark_per, assignment_id, group_id
 		FROM total_grade_percent
 		WHERE 50 <= mark_per AND mark_per < 60
-		)
-	GROUP BY assignment_id;
+		) g3
+	GROUP BY g3.assignment_id;
 	
 	
 -- View for grade not greater than 49
@@ -82,8 +82,8 @@ CREATE VIEW grade_lt_50 AS
 		SELECT mark_per, assignment_id, group_id
 		FROM total_grade_percent
 		WHERE mark_per < 50
-		)
-	GROUP BY assignment_id;
+		) g4
+	GROUP BY g4.assignment_id;
 	
 -- View for avg of each assignment
 CREATE VIEW grade_avg AS
