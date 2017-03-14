@@ -102,8 +102,8 @@ CREATE VIEW final_result AS
 	
 -- Make the value of null equals 0;
 UPDATE final_result SET average_mark_percent = 0, 
-grade_gt_80 = 0, grade_gt_60 = 0, grade_gt_50 = 0,
-grade_lt_50 = 0 WHERE average_mark_percent = NULL;
+num_80_100 = 0, num_60_79 = 0, num_50_59 = 0,
+num_0_49 = 0 WHERE average_mark_percent = NULL;
 
 -- Final answer.
 INSERT INTO q1 (SELECT * FROM final_result);
