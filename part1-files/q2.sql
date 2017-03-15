@@ -12,7 +12,9 @@ CREATE TABLE q2 (
 
 -- You may find it convenient to do this for each of the views
 -- that define your intermediate steps.  (But give them better names!)
-DROP VIEW IF EXISTS intermediate_step CASCADE;
+DROP VIEW IF EXISTS all_assignment CASCADE;
+DROP VIEW IF EXISTS grader_ast CASCADE;
+DROP VIEW IF EXISTS total_grade CASCADE;
 
 -- Define views for your intermediate steps here.
 
@@ -108,32 +110,60 @@ CREATE VIEW not_fatigue AS
 			username = g2.username AND
 			due_date < g2.due_date AND
 			avg_mark > g2.avg_mark);
-			
-CREATE VIEW 
 
-
--- View for earlist ast mark
-CREATE VIEW AS grader_ast_first AS
-	select username, avg_mark as first_mark
+-- View for fatigue graders
+CREATE VIEW fatigue AS
+	select distinct username
 	from grader_ast6
+	except 
+	select username
+	from not_fatigue;
+	
+-- View for fatigue graders with marks and ids
+CREATE VIEW grader_ast7 AS
+	select username, assigned_id, avg_mark, due_date
+	from grader_ast6
+	where username in
+	(select username from fatigue);
+
+
+-- View for fatigue graders earlist ast mark
+CREATE VIEW grader_ast_first AS
+	select username, avg_mark as first_mark
+	from grader_ast7
 	where due_date = min(due_date);
 
--- View for latest ast mark
-CREATE VIEW AS grader_ast_latest AS
+-- View for fatigue graders latest ast mark
+CREATE VIEW grader_ast_latest AS
 	select username, avg_mark as last_mark
-	from grader_ast6
+	from grader_ast7
 	where due_date = max(due_date);
 	
--- View for grader with mark_change_first_last
-CREATE VIEW AS grader_mark_change AS
-	select username, first_ma
+-- View for fatigue grader with mark_change_first_last
+CREATE VIEW grader_mark_change AS
+	select username, first_mark - last_mark as mark_change_first_last
+	from grader_ast_first natural join grader_ast_latest;
+	
+-- View for grader with avg_mark on all ast
+CREATE VIEW grader_mark_avg AS
+	select username, avg(avg_mark)
+	from grader_ast7
+	group by username;
 
-
-
-
+-- View for grader with names
+CREATE VIEW grader_name AS
+	select username, surname, firstname
+	from fatigue natural join MarkusUser;
+	
+-- View for final results
+CREATE VIEW final_result AS
+	select firstname||' '||surname as ta_name,
+	average_mark_all_assignments, mark_change_first_last
+	from grader_name natural join grader_mark_avg
+	natural join grader_mark_change;
 
 
 
 -- Final answer.
-INSERT INTO q2 
+INSERT INTO q2 (select * from final_result);
 	-- put a final query here so that its results will go into the table.
