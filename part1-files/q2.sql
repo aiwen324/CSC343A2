@@ -90,7 +90,7 @@ CREATE VIEW grader_ast4 AS
 CREATE VIEW grader_ast5 AS
 	select username, assignment_id, avg(mark) as avg_mark
 	from grader_ast4
-	group by (username, assignment_id)
+	group by username, assignment_id
 	having count(group_id) >= 10;
 	
 -- View for grader with ast_id, mark and date
@@ -121,7 +121,7 @@ CREATE VIEW fatigue AS
 	
 -- View for fatigue graders with marks and ids
 CREATE VIEW grader_ast7 AS
-	select username, assignmentid, avg_mark, due_date
+	select username, assignment_id, avg_mark, due_date
 	from grader_ast6
 	where username in
 	(select username from fatigue);
@@ -129,15 +129,19 @@ CREATE VIEW grader_ast7 AS
 
 -- View for fatigue graders earlist ast mark
 CREATE VIEW grader_ast_first AS
-	select username, avg_mark as first_mark
-	from grader_ast7
-	where due_date = min(due_date);
+	select g1.username, g1.avg_mark as first_mark
+	from grader_ast7 g1 join (select username, min(due_date) as due_date
+						   from grader_ast7
+						   group by username) g2
+	on g1.username = g2.username and g1.due_date = g2.due_date;
 
 -- View for fatigue graders latest ast mark
 CREATE VIEW grader_ast_latest AS
-	select username, avg_mark as last_mark
-	from grader_ast7
-	where due_date = max(due_date);
+	select g1.username, g1.avg_mark as last_mark
+	from grader_ast7 g1 join (select username, max(due_date) as due_date
+						   from grader_ast7
+						   group by username) g2
+	on g1.username = g2.username and g1.due_date = g2.due_date;
 	
 -- View for fatigue grader with mark_change_first_last
 CREATE VIEW grader_mark_change AS
@@ -146,7 +150,7 @@ CREATE VIEW grader_mark_change AS
 	
 -- View for grader with avg_mark on all ast
 CREATE VIEW grader_mark_avg AS
-	select username, avg(avg_mark)
+	select username, avg(avg_mark) as average_mark_all_assignments
 	from grader_ast7
 	group by username;
 
