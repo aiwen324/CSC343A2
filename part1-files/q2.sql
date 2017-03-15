@@ -145,7 +145,7 @@ CREATE VIEW grader_ast_latest AS
 	
 -- View for fatigue grader with mark_change_first_last
 CREATE VIEW grader_mark_change AS
-	select username, first_mark - last_mark as mark_change_first_last
+	select username, last_mark - first_mark as mark_change_first_last
 	from grader_ast_first natural join grader_ast_latest;
 	
 -- View for grader with avg_mark on all ast
