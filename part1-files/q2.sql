@@ -63,9 +63,9 @@ CREATE VIEW total_grade AS
 	
 -- View for grader, g_id, ast_id and percent_mark
 CREATE VIEW grader_ast_percent AS
-	select username, group_id, assignment_id,
-	g.mark/t.mark as mark
-	from grader_ast2 g natural join total_grade t;
+	select username, group_id, g.assignment_id,
+	g.mark * 100/t.mark as mark
+	from grader_ast2 g join total_grade t on g.assignment_id = t.assignment_id;
 	
 	
 CREATE VIEW grader_ast3 AS
