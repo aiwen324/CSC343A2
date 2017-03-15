@@ -63,7 +63,7 @@ CREATE VIEW total_grade AS
 	
 -- View for grader, g_id, ast_id and percent_mark
 CREATE VIEW grader_ast_percent AS
-	select username, group_id, assigned_id,
+	select username, group_id, assignment_id,
 	g.mark/t.mark as mark
 	from grader_ast2 g natural join total_grade t;
 	
@@ -121,7 +121,7 @@ CREATE VIEW fatigue AS
 	
 -- View for fatigue graders with marks and ids
 CREATE VIEW grader_ast7 AS
-	select username, assigned_id, avg_mark, due_date
+	select username, assignmentid, avg_mark, due_date
 	from grader_ast6
 	where username in
 	(select username from fatigue);
