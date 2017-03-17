@@ -15,7 +15,8 @@ CREATE TABLE q4 (
 
 -- You may find it convenient to do this for each of the views
 -- that define your intermediate steps.  (But give them better names!)
-DROP VIEW IF EXISTS intermediate_step CASCADE;
+DROP VIEW IF EXISTS grader_with_astid CASCADE;
+DROP VIEW IF EXISTS total_grade CASCADE;
 
 -- Define views for your intermediate steps here.
 CREATE VIEW grader_with_astid AS
@@ -31,7 +32,7 @@ CREATE VIEW grader_with_mark_astid AS
 CREATE VIEW total_grade AS
 	select assignment_id, sum(out_of * weight) as total_mark
 	from RubricItem
-	where assignment_id in (select * from grader_with_mark_astid)
+	where assignment_id in (select assignment_id from grader_with_mark_astid)
 	group by assignment_id;
 
 -- View for grader_with_mark_astid with percentage mark
