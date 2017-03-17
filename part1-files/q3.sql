@@ -72,7 +72,7 @@ CREATE VIEW solo_group AS
 	
 CREATE VIEW solo_group2 AS
 	select g.assignment_id, description, group_id, num_mem, mark_percent
-	from (select distinct assignment_id from gid_num_astid3) g natural left join solo_group s
+	from (select distinct assignment_id from gid_num_astid3) g natural left join solo_group s;
 
 -- View for collab groups
 CREATE VIEW collab_group AS
@@ -82,19 +82,17 @@ CREATE VIEW collab_group AS
 	
 CREATE VIEW collab_group2 AS
 	select g.assignment_id, description, group_id, num_mem, mark_percent
-	from (select distinct assignment_id from gid_num_astid3) g natural left join collab_group c
+	from (select distinct assignment_id from gid_num_astid3) g natural left join collab_group c;
 	
 -- View for avg grade for solo_group
 CREATE VIEW solo_group_avg AS
 	select assignment_id, avg(mark_percent) as average_solo, count(group_id) as num_solo
-	as average_solo
 	from solo_group2
 	group by assignment_id;
 
 -- View for avg grade for collab group
 CREATE VIEW collab_group_avg AS
 	select assignment_id, avg(mark_percent) as average_collaborators, count(group_id) as num_collaborators
-	as average_collaborators
 	from collab_group2
 	group by assignment_id;
 	
@@ -102,13 +100,14 @@ CREATE VIEW collab_group_avg AS
 CREATE VIEW ast_group_avg AS
 	select assignment_id, sum(num_mem * mark_percent) / sum(num_mem) as average_students_per_submission, 
 	description
-	from gid_num_astid3;
+	from gid_num_astid3
+	group by assignment_id,description;
 	
 -- View for final results
 CREATE VIEW final_result AS
 	select assignment_id, description, num_solo, average_solo, num_collaborators, 
 	average_collaborators, average_students_per_submission
-	from ast_group_avg natural join collab_group_avg natural join solo_group;
+	from ast_group_avg natural join collab_group_avg natural join solo_group_avg;
 
 
 
