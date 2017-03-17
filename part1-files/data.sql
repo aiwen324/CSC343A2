@@ -15,9 +15,28 @@ TRUNCATE TABLE MarkusUser CASCADE;
 -- Now insert data from scratch.
 
 INSERT INTO MarkusUser VALUES ('i1', 'iln1', 'ifn1', 'instructor');
-INSERT INTO MarkusUser VALUES ('s1', 'sln1', 'sfn1', 'student');
-INSERT INTO MarkusUser VALUES ('s2', 'sln2', 'sfn2', 'student');
 INSERT INTO MarkusUser VALUES ('t1', 'tln1', 'tfn1', 'TA');
+--Extra data for User
+INSERT INTO MarkusUser VALUES ('s1', 's1n1', 'sfn1', 'student');
+INSERT INTO MarkusUser VALUES ('s2', 's2n2', 'sfn2', 'student');
+INSERT INTO MarkusUser VALUES ('s3', 's3n3', 'sfn3', 'student');
+INSERT INTO MarkusUser VALUES ('s4', 's4n4', 'sfn4', 'student');
+INSERT INTO MarkusUser VALUES ('s5', 's5n5', 'sfn5', 'student');
+INSERT INTO MarkusUser VALUES ('s6', 's6n6', 'sfn6', 'student');
+INSERT INTO MarkusUser VALUES ('s7', 's7n7', 'sfn7', 'student');
+INSERT INTO MarkusUser VALUES ('s8', 's8n8', 'sfn8', 'student');
+INSERT INTO MarkusUser VALUES ('s9', 's9n9', 'sfn9', 'student');
+INSERT INTO MarkusUser VALUES ('s10', 's10n10', 'sfn10', 'student');
+INSERT INTO MarkusUser VALUES ('s11', 's11n11', 'sfn11', 'student');
+INSERT INTO MarkusUser VALUES ('s12', 's12n12', 'sfn12', 'student');
+INSERT INTO MarkusUser VALUES ('s13', 's13n13', 'sfn13', 'student');
+INSERT INTO MarkusUser VALUES ('s14', 's14n14', 'sfn14', 'student');
+INSERT INTO MarkusUser VALUES ('s15', 's15n15', 'sfn15', 'student');
+INSERT INTO MarkusUser VALUES ('s16', 's16n16', 'sfn16', 'student');
+INSERT INTO MarkusUser VALUES ('s17', 's17n17', 'sfn17', 'student');
+INSERT INTO MarkusUser VALUES ('s18', 's18n18', 'sfn18', 'student');
+INSERT INTO MarkusUser VALUES ('s19', 's19n19', 'sfn19', 'student');
+
 
 INSERT INTO Assignment VALUES (1000, 'a1', '2017-02-10 20:00', 1, 2);
 INSERT INTO Assignment VALUES (1001, 'a1', '2017-02-01 20:00', 1, 2);
