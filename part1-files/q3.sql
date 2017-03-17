@@ -91,22 +91,33 @@ CREATE VIEW solo_group_avg AS
 
 -- View for avg grade for collab group
 CREATE VIEW collab_group_avg AS
-	select assignment_id, avg(mark_percent) as average_collaborators, sum(num_mem) as num_collaborators
+	select assignment_id, avg(mark_percent) as average_collaborators, sum(num_mem) as num_collaborators,
 	from collab_group2
 	group by assignment_id;
-	
+
+/*
+-- It's kind of useless
 -- View for all assignment with solo group
 CREATE VIEW ast_group_avg AS
 	select assignment_id, sum(num_mem * mark_percent) / sum(num_mem) as average_students_per_submission, 
 	description
 	from gid_num_astid3
 	group by assignment_id,description;
-	
+*/
+
+
+-- View for assignment with description with avg_num_per_group
+CREATE VIEW gid_stu_avg AS
+	select assignment_id, description, sum(num_mem) / count(group_id) as average_students_per_submission
+	from gid_num_astid3
+	group by assignment_id, description;
+
+
 -- View for final results
-CREATE VIEW final_result AS
+CREATE VIEW almost_final_result AS
 	select assignment_id, description, num_solo, average_solo, num_collaborators, 
 	average_collaborators, average_students_per_submission
-	from ast_group_avg natural join collab_group_avg natural join solo_group_avg;
+	from gid_stu_avg natural join collab_group_avg natural join solo_group_avg;
 
 
 
