@@ -268,7 +268,7 @@ INSERT INTO Membership VALUES ('s4', 2084);
 INSERT INTO Membership VALUES ('s5', 2086);
 INSERT INTO Membership VALUES ('s6', 2086);
 
-INSERT INTO Submissions VALUES (3000, 'A1.pdf', 's1', 2000, '2017-02-08 19:59');
+INSERT INTO Submissions VALUES (3000, 'A1.pdf', 's1', 2001, '2017-02-08 19:59');
 
 --Extra data for Grader
 INSERT INTO Grader VALUES (2001, 't1');

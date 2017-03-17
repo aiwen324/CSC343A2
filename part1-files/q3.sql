@@ -28,8 +28,7 @@ DROP VIEW IF EXISTS group_mark CASCADE;
 CREATE VIEW gid_num AS
 	select group_id, count(username) as num_mem
 	from Membership
-	group by group_id
-	having count(username) = 1;
+	group by group_id;
 	
 -- View for group_id and num of members
 -- with ast_id
@@ -92,7 +91,7 @@ CREATE VIEW solo_group_avg AS
 
 -- View for avg grade for collab group
 CREATE VIEW collab_group_avg AS
-	select assignment_id, avg(mark_percent) as average_collaborators, count(group_id) as num_collaborators
+	select assignment_id, avg(mark_percent) as average_collaborators, sum(num_mem) as num_collaborators
 	from collab_group2
 	group by assignment_id;
 	
