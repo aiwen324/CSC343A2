@@ -137,8 +137,22 @@ INSERT INTO AssignmentGroup VALUES (2009, 1009, 'repo_url9');
 
 
 
-INSERT INTO Membership VALUES ('s1', 2000);
-INSERT INTO Membership VALUES ('s2', 2000);
+--Extra data for Membership
+INSERT INTO Membership VALUES ('s1', 1000);
+INSERT INTO Membership VALUES ('s2', 1000);
+INSERT INTO Membership VALUES ('s1', 1001);
+INSERT INTO Membership VALUES ('s1', 1002);
+INSERT INTO Membership VALUES ('s2', 1002);
+INSERT INTO Membership VALUES ('s1', 1003);
+INSERT INTO Membership VALUES ('s1', 1004);
+INSERT INTO Membership VALUES ('s2', 1004);
+INSERT INTO Membership VALUES ('s1', 1005);
+INSERT INTO Membership VALUES ('s1', 1006);
+INSERT INTO Membership VALUES ('s2', 1006);
+INSERT INTO Membership VALUES ('s1', 1007);
+INSERT INTO Membership VALUES ('s1', 1008);
+INSERT INTO Membership VALUES ('s2', 1008);
+INSERT INTO Membership VALUES ('s1', 1009);
 
 INSERT INTO Submissions VALUES (3000, 'A1.pdf', 's1', 2000, '2017-02-08 19:59');
 
