@@ -20,6 +20,16 @@ INSERT INTO MarkusUser VALUES ('s2', 'sln2', 'sfn2', 'student');
 INSERT INTO MarkusUser VALUES ('t1', 'tln1', 'tfn1', 'TA');
 
 INSERT INTO Assignment VALUES (1000, 'a1', '2017-02-08 20:00', 1, 2);
+INSERT INTO Assignment VALUES (1001, 'a1', '2017-02-01 20:00', 1, 2);
+INSERT INTO Assignment VALUES (1002, 'a2', '2017-02-02 20:00', 1, 2);
+INSERT INTO Assignment VALUES (1003, 'a3', '2017-02-03 20:00', 1, 2);
+INSERT INTO Assignment VALUES (1004, 'a4', '2017-02-04 20:00', 1, 2);
+INSERT INTO Assignment VALUES (1005, 'a5', '2017-02-05 20:00', 1, 2);
+INSERT INTO Assignment VALUES (1006, 'a6', '2017-02-06 20:00', 1, 2);
+INSERT INTO Assignment VALUES (1007, 'a7', '2017-02-07 20:00', 1, 5);
+INSERT INTO Assignment VALUES (1008, 'a8', '2017-02-08 20:00', 1, 4);
+INSERT INTO Assignment VALUES (1009, 'a9', '2017-02-09 20:00', 1, 3);
+
 
 INSERT INTO Required VALUES (1000, 'A1.pdf');
 
