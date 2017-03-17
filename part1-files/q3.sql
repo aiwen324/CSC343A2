@@ -16,7 +16,11 @@ CREATE TABLE q3 (
 
 -- You may find it convenient to do this for each of the views
 -- that define your intermediate steps.  (But give them better names!)
-DROP VIEW IF EXISTS intermediate_step CASCADE;
+DROP VIEW IF EXISTS gid_num CASCADE;
+DROP VIEW IF EXISTS total_grade CASCADE;
+DROP VIEW IF EXISTS group_mark CASCADE;
+
+
 
 -- Define views for your intermediate steps here.
 
