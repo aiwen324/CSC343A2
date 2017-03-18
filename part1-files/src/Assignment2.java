@@ -115,10 +115,10 @@ public class Assignment2 {
 						else {
 							// This case since groupID is not in the table and username type is qualified, 
 							// We can just simply insert the data to table
-							queryString = "insert into Grader values (?, ?)";
+							queryString = "update Grader set username = ? where group_id = ?";
 							ps = connection.prepareStatement(queryString);
-							ps.setInt(1, groupID);
-							ps.setString(2, grader);
+							ps.setString(1, grader);
+							ps.setInt(2, groupID);
 							ps.execute();
                             return true;
 						}
