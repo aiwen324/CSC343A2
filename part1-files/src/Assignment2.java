@@ -338,12 +338,25 @@ public class Assignment2 {
     			}
     			else {
     				// Find the ordered username for all students with mark(can be null)
-    				qs = "create view t1 as select * from AssignmentGroup natural join Membership where assignment_id = ?;";
-    				qs += "create view t2 as select username, mark from t1 natural left join Result order by mark DESC nulls last, username ASC";
+    				qs = "Drop view if exists t1 CASCADE";
+    				p = connection.prepareStatement(qs);
+    				p.execute();
+    				qs = "Dorp view if exists all_students CASCADE";
+    				p = connection.prepareStatement(qs);
+    				p.execute();
+    				qs = "create view t1 as select * from AssignmentGroup natural join Membership where assignment_id = ?";
+    				p = connection.prepareStatement(qs);
+    				p.setInt(1, otherAssignment);
+    				p.execute();
+    				qs = "create view t2 as select username, mark from t1 natural left join Result order by mark DESC nulls last, username ASC";
+    				p = connection.prepareStatement(qs);
+    				p.execute();
     				// This part is username of all students
-    				qs += "create view all_students as select username from MarkusUser where type = 'student';";
+    				qs = "create view all_students as select username from MarkusUser where type = 'student'";
+    				p = connection.prepareStatement(qs);
+    				p.execute();
     				// This will be the table with highest mark at top with alphabetic as second order
-    				qs += "select username from all_students natural left join t2 order by mark DESC nulls last, username ASC";
+    				qs = "select username from all_students natural left join t2 order by mark DESC nulls last, username ASC";
     				p = connection.prepareStatement(qs);
     				p.setInt(1, otherAssignment);
     				rs = p.executeQuery();
