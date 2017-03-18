@@ -107,7 +107,11 @@ public class Assignment2 {
 								return false;
 							}
 							else {
-								rs.updateString("username", grader);
+								queryString = "update Grader set username = ? where group_id = ?";
+								ps = connection.prepareStatement(queryString);
+								ps.setString(1, grader);
+								ps.setInt(2, groupID);
+								ps.execute();
 								return true;
 							}
 							
