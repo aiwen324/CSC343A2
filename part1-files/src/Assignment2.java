@@ -34,8 +34,15 @@ public class Assignment2 {
      * @return true if connecting is successful, false otherwise
      */
     public boolean connectDB(String URL, String username, String password) {
-        // Replace this return statement with an implementation of this method!
-        return false;
+        try {
+        	connection = DriverManager.getConnection(URL, username, password);
+            String qs = "set search_path to markus";
+            PreparedStatement p = connection.prepareStatement(qs);
+            p.execute();
+        	return true;
+        } catch (SQLException e){
+        	return false;
+        }
     }
 
     /**
@@ -44,8 +51,12 @@ public class Assignment2 {
      * @return true if the closing was successful, false otherwise
      */
     public boolean disconnectDB() {
-        // Replace this return statement with an implementation of this method!
+        try {
+        	connection.close();
+        	return true;
+        } catch (SQLException e) {
         return false;
+        }
     }
 
     /**
@@ -62,8 +73,69 @@ public class Assignment2 {
      * @return true if the operation was successful, false otherwise
      */
     public boolean assignGrader(int groupID, String grader) {
-        // Replace this return statement with an implementation of this method!
-        return false;
+        // First, we check if the group_id is in the AssignmentGroup Table
+    	String queryString = "select group_id from Assignment where group_id = ?";
+    	try {
+			PreparedStatement ps = connection.prepareStatement(queryString);
+			ps.setInt(1, groupID);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()){
+				// If group_id is in the assignment table, we will go to Grader table to find some more information
+				// In the grader table, we will check if group_id is in the Grader table
+				// 1 ---- if group_id is in the Grader table, we will check if its corresponding value is null
+				// 2 ---- if group_id is not in the Grader table, we can just simply add it
+				// But we check if that grader is really an instructor or TA
+				queryString = "select username, type from MarKusUser where username = ?";
+				ps = connection.prepareStatement(queryString);
+				ps.setString(1, grader);
+				rs = ps.executeQuery();
+				if (rs.next()){
+					// We will check if type of username is 'TA' or 'instructor'
+					if (rs.getString("type").equals("student")){
+						return false;
+					}
+					else {
+						// This is the case that type of grader is a TA or instructor
+						queryString = "select group_id, username from Grader where group_id = ?";
+						ps = connection.prepareStatement(queryString);
+						ps.setInt(1, groupID);
+						rs = ps.executeQuery();
+						if (rs.next()){
+							// This is the case that groupID already in the Grader table, need to check
+							// whether the corresponding username is null or has been assigned
+							if (rs.getString("username") != null) {
+								return false;
+							}
+							else {
+								rs.updateString("username", grader);
+								return true;
+							}
+							
+						}
+						else {
+							// This case since groupID is not in the table and username type is qualified, 
+							// We can just simply insert the data to table
+							queryString = "insert into Grader values (?, ?)";
+							ps = connection.prepareStatement(queryString);
+							ps.setInt(1, groupID);
+							ps.setString(2, grader);
+							ps.execute();
+                            return true;
+						}
+					}
+				}
+				else {
+					// This is the case that username of grader is not in the MarkusUser table
+					return false;
+				}
+			}
+			else {
+                // This is the case that group_id is not in the AssignmentGroup Table
+				return false;
+			}
+		} catch (SQLException e) {
+			return false;
+		}
     }
 
     /**
@@ -86,9 +158,104 @@ public class Assignment2 {
      *            username of the new member to be added to the group
      * @return true if the operation was successful, false otherwise
      */
-    public boolean recordMember(int assignmentID, int groupID, String newMember) {
-        // Replace this return statement with an implementation of this method!
-        return false;
+    
+	public boolean recordMember(int assignmentID, int groupID, String newMember) {
+    	// FIrst we, check if the assignment exists
+    	try {
+    		String qs = "select group_max from Assignment where assignment_id = ?";
+    		PreparedStatement p = connection.prepareStatement(qs);
+    		p.setInt(1, assignmentID);
+    		ResultSet rs = p.executeQuery();
+    		if (rs.next()){
+    			// Case that astid exists
+    			int capacity = rs.getInt("group_max");
+    			// Check if newMember is valid
+    			qs = "select type from MarkusUser where username = ?";
+    			p = connection.prepareStatement(qs);
+    			p.setString(1, newMember);
+    			rs = p.executeQuery();
+    			if (rs.next()){
+    				// Case that username of newMember exists, proceed to check if it's student
+    				if (rs.getString("type").equals("student")) {
+    					// Case that this newMember is a student
+    					// Now let's check if the groupID has been assigned to that astid
+    					qs = "select * from AssignmentGroup where group_id = ? and assignment_id = ?";
+    					p = connection.prepareStatement(qs);
+    					p.setInt(1, groupID);
+    					p.setInt(2, assignmentID);
+    					rs = p.executeQuery();
+    					if (rs.next()){
+    						// Case that groupID has been clared for this ast
+    						// Proceed to finc if group_id is in Membership
+    						// 1 --- groupID not exists, it's fine, we can generate new group for it
+    						// 2 --- groupID exists, we need to check if it has reach the capacity
+    						qs = "select group_id, count(username) as num_mem from Membership where group_id = ? group by group_id";
+    						p = connection.prepareStatement(qs);
+    						p.setInt(1, groupID);
+    						rs = p.executeQuery();
+    						if (rs.next()){
+    							// Case that we find such groupID in the Member tabel
+    							int num_mem = rs.getInt("num_mem");
+								// But we still need to check if that newMember has already in that group
+    							qs = "select group_id, username from Membership where group_id = ? and username = ?";
+								p = connection.prepareStatement(qs);
+								p.setInt(1, groupID);
+								p.setString(2, newMember);
+								rs = p.executeQuery();
+								if (rs.next()) {
+									// Case that newMember has been inserted into the groupID
+									return true;
+								}
+								else {
+									if (num_mem >= capacity) {
+										// newMember is not in that group but reach limit
+										return false;
+									}
+									else {
+										// We will insert a new value to this table
+										qs = "insert into Membership values (?, ?)";
+										p = connection.prepareStatement(qs);
+										p.setString(1, newMember);
+										p.setInt(2, groupID);
+										p.execute();
+										return true;
+									}
+								}
+    						}
+    						else {
+    							// Case that we find such groupID not in the Member table
+    							qs = "insert into Membership values (?, ?)";
+								p = connection.prepareStatement(qs);
+								p.setString(1, newMember);
+								p.setInt(2, groupID);
+								p.execute();
+								return true;
+    						}
+    					}
+    					else {
+    						// Case that groupID hasn't been 
+    						return false;
+    					}
+    					
+    				}
+    				else {
+    					// Case that this newMember is not a student
+    					return false;
+    				}
+    			}
+    			else {
+    				// Case that username not exists
+    				return false;
+    			}
+    			
+    		}
+    		else {
+    			// This is the case that assignmentID does not exist
+    			return false;
+    		}
+    	} catch (SQLException e) {
+    		return false;
+    	}
     }
 
     /**
