@@ -301,12 +301,127 @@ public class Assignment2 {
      */
     public boolean createGroups(int assignmentToGroup, int otherAssignment,
             String repoPrefix) {
-        // Replace this return statement with an implementation of this method!
-        return false;
+    	try {
+    		// First we check if those 2 assignemntID are bot in the Table
+    		int max_size = 0;
+    		String qs = "select * from Assignment where assignment_id = ? or assignment_id = ?";
+    		PreparedStatement p = connection.prepareStatement(qs);
+    		p.setInt(1, assignmentToGroup);
+    		p.setInt(2, otherAssignment);
+    		ResultSet rs = p.executeQuery();
+    		// assignment_id is primary key, so there must be 2 rows if it satisfies
+    		int count = 0;
+    		while (rs.next()){
+    			count ++;
+    			if (rs.getInt("assignment_id") == assignmentToGroup){
+    				// Store the max_size
+    				max_size = rs.getInt("group_max");
+    			}
+    		}
+    		if (count != 2){
+    			// We don't find both of the astid
+    			return false;
+    		}
+    		else {
+    			// We check if there is any group has been defined for assignmentToGroup
+    			qs = "select * from AssignmentGroup where assignment_id = ?";
+    			p = connection.prepareStatement(qs);
+    			p.setInt(1, assignmentToGroup);
+    			rs = p.executeQuery();
+    			if (rs.next()){
+    				// There has been some group assigned to this assignment
+    				return false;
+    			}
+    			else {
+    				// Find the ordered username for all students with mark(can be null)
+    				qs = "create view t1 as select * from AssignmentGroup natural join Membership where assignment_id = ?;";
+    				qs += "create view t2 as select username, mark from t1 natural left join Result order by mark DESC nulls last, username ASC";
+    				// This part is username of all students
+    				qs += "create view all_students as select username from MarkusUser where type = 'student';";
+    				// This will be the table with highest mark at top with alphabetic as second order
+    				qs += "select username from all_students natural left join t2 order by mark DESC nulls last, username ASC";
+    				p = connection.prepareStatement(qs);
+    				p.setInt(1, otherAssignment);
+    				rs = p.executeQuery();
+    				// Calculate the total number of students
+    				String ts = "select count(username) as total_num from MarkusUser where type = 'student'";
+    				PreparedStatement ps = connection.prepareStatement(ts);
+    				ResultSet totalnum = ps.executeQuery();
+    				int total_num;
+    				if(totalnum.next()){
+    					total_num = totalnum.getInt("total_num");
+    				}
+    				else {
+    					// It's impossible to get here, just in case
+    					return false;
+    				}
+    				// Calculate the max group_id in AssignmentGroup
+    				String ns = "select max(group_id) as start_num from AssignmentGroup";
+    				PreparedStatement ps2 = connection.prepareStatement(ns);
+    				ResultSet startnum = ps2.executeQuery();
+   					Integer start_num;
+    				if (startnum.next()){
+    					start_num = startnum.getInt("start_num");
+    				}
+    				else {
+    					return false;
+    				}
+    				if (start_num == null) {
+    					start_num = 0;
+    				}
+    				// Calculate the number of groups we should have
+    				int num_group = total_num / max_size;
+    				int remainder = total_num % max_size;
+    				for (int i = 0; i < num_group; i++){
+    					start_num ++;
+    					String ks = "insert into AssignmentGroup values (?, ?)";
+    					PreparedStatement ps3 = connection.prepareStatement(ks);
+    					String repo = repoPrefix + "/group_" + start_num;
+    					ps3.setInt(1, assignmentToGroup);
+    					ps3.setString(2, repo);
+    					ps3.execute();
+    					for (int j = 0; j < max_size; j++){
+    						rs.next();
+    						String l = rs.getString("username");
+    						ks = "insert into Membership values (?, ?)";
+    						ps3 = connection.prepareStatement(ks);
+    						ps3.setString(1, l);
+    						ps3.setInt(2, start_num);
+    					}
+    				}
+    				start_num++;
+    				if (rs.next()){
+    					String ks = "insert into AssignmentGroup values (?, ?)";
+    					PreparedStatement ps3 = connection.prepareStatement(ks);
+    					String repo = repoPrefix + "/group_" + start_num;
+    					ps3.setInt(1, assignmentToGroup);
+    					ps3.setString(2, repo);
+    					ps3.execute();
+    					String l = rs.getString("username");
+						ks = "insert into Membership values (?, ?)";
+						ps3 = connection.prepareStatement(ks);
+						ps3.setString(1, l);
+						ps3.setInt(2, start_num);
+    				}
+    				while (rs.next()){
+    					String l = rs.getString("username");
+						String ks = "insert into Membership values (?, ?)";
+						PreparedStatement ps3 = connection.prepareStatement(ks);
+						ps3.setString(1, l);
+						ps3.setInt(2, start_num);
+    				}
+    				return true;
+    			}
+    		}
+    		
+    		
+    		
+    	} catch (SQLException e) {
+    		return false;
+    	}
     }
 
     public static void main(String[] args) {
-        // You can put testing code in here. It will not affect our autotester.
         System.out.println("Boo!");
     }
 }
