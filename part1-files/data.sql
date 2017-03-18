@@ -38,7 +38,7 @@ INSERT INTO MarkusUser VALUES ('s18', 's18n18', 'sfn18', 'student');
 INSERT INTO MarkusUser VALUES ('s19', 's19n19', 'sfn19', 'student');
 
 
-INSERT INTO Assignment VALUES (1000, 'a1', '2017-02-10 20:00', 1, 2);
+INSERT INTO Assignment VALUES (1000, 'A1', '2017-02-10 20:00', 1, 2);
 INSERT INTO Assignment VALUES (1001, 'a2', '2017-02-01 20:00', 1, 2);
 INSERT INTO Assignment VALUES (1002, 'a3', '2017-02-02 20:00', 1, 2);
 INSERT INTO Assignment VALUES (1003, 'a4', '2017-02-03 20:00', 1, 2);
